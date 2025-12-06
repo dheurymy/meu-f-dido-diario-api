@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const { cadastro, login, getMe } = require('../controllers/authController');
+const { verificarUsuario } = require('../controllers/userController');
 const { proteger } = require('../middlewares/auth');
 
 // Rotas públicas
+router.get('/verificar-usuario/:usuario', verificarUsuario);
 router.post('/cadastro', cadastro);
 router.post('/login', login);
 
