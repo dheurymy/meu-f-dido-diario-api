@@ -5,7 +5,7 @@ const Entry = require('../models/Entry');
 // @access  Private
 exports.getAllEntries = async (req, res) => {
   try {
-    const entries = await Entry.find({ usuario: req.user._id })
+    const entries = await Entry.find({ usuario: req.usuario._id })
       .sort({ data: -1 })
       .select('-__v');
 
@@ -30,7 +30,7 @@ exports.getEntryById = async (req, res) => {
   try {
     const entry = await Entry.findOne({
       _id: req.params.id,
-      usuario: req.user._id
+      usuario: req.usuario._id
     }).select('-__v');
 
     if (!entry) {
@@ -77,7 +77,7 @@ exports.createEntry = async (req, res) => {
     }
 
     const entry = await Entry.create({
-      usuario: req.user._id,
+      usuario: req.usuario._id,
       titulo,
       conteudo,
       data: data || Date.now(),
@@ -119,7 +119,7 @@ exports.updateEntry = async (req, res) => {
     // Buscar entrada
     let entry = await Entry.findOne({
       _id: req.params.id,
-      usuario: req.user._id
+      usuario: req.usuario._id
     });
 
     if (!entry) {
@@ -176,7 +176,7 @@ exports.deleteEntry = async (req, res) => {
   try {
     const entry = await Entry.findOneAndDelete({
       _id: req.params.id,
-      usuario: req.user._id
+      usuario: req.usuario._id
     });
 
     if (!entry) {
