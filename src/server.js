@@ -5,6 +5,7 @@ const connectDB = require('./config/database');
 
 // Importar rotas
 const authRoutes = require('./routes/authRoutes');
+const diaryRoutes = require('./routes/diaryRoutes');
 
 // Conectar ao banco de dados
 connectDB();
@@ -27,6 +28,7 @@ app.get('/', (req, res) => {
 
 // Rotas
 app.use('/api/auth', authRoutes);
+app.use('/diary', diaryRoutes);
 
 // Porta
 const PORT = process.env.PORT || 3000;

@@ -1,6 +1,6 @@
 # API Node.js com Express e MongoDB
 
-API REST para autenticação de usuários com Node.js, Express e MongoDB.
+API REST para autenticação de usuários e gerenciamento de diário pessoal com Node.js, Express e MongoDB.
 
 ## 🚀 Tecnologias
 
@@ -135,6 +135,138 @@ Authorization: Bearer seu_token_jwt
 }
 ```
 
+### Diário (requer autenticação)
+
+#### Listar todas as entradas
+```http
+GET /diary/entries
+Authorization: Bearer seu_token_jwt
+```
+
+**Resposta:**
+```json
+{
+  "sucesso": true,
+  "quantidade": 2,
+  "dados": [
+    {
+      "_id": "...",
+      "usuario": "...",
+      "titulo": "Meu primeiro dia",
+      "conteudo": "Hoje foi um dia incrível...",
+      "data": "2025-12-06T00:00:00.000Z",
+      "humor": "feliz",
+      "tags": ["viagem", "felicidade"],
+      "privado": true,
+      "createdAt": "2025-12-06T00:00:00.000Z",
+      "updatedAt": "2025-12-06T00:00:00.000Z"
+    }
+  ]
+}
+```
+
+#### Buscar entrada por ID
+```http
+GET /diary/entries/:id
+Authorization: Bearer seu_token_jwt
+```
+
+**Resposta:**
+```json
+{
+  "sucesso": true,
+  "dados": {
+    "_id": "...",
+    "titulo": "Meu primeiro dia",
+    "conteudo": "Hoje foi um dia incrível...",
+    "data": "2025-12-06T00:00:00.000Z",
+    "humor": "feliz",
+    "tags": ["viagem", "felicidade"],
+    "privado": true
+  }
+}
+```
+
+#### Criar nova entrada
+```http
+POST /diary/entries
+Authorization: Bearer seu_token_jwt
+Content-Type: application/json
+
+{
+  "titulo": "Meu primeiro dia",
+  "conteudo": "Hoje foi um dia incrível...",
+  "data": "2025-12-06T00:00:00.000Z",
+  "humor": "feliz",
+  "tags": ["viagem", "felicidade"],
+  "privado": true
+}
+```
+
+**Campos obrigatórios:** `titulo`, `conteudo`  
+**Campos opcionais:** `data` (padrão: agora), `humor` (padrão: "outro"), `tags`, `privado` (padrão: true)
+
+**Opções de humor:** `feliz`, `triste`, `ansioso`, `calmo`, `animado`, `cansado`, `outro`
+
+**Resposta:**
+```json
+{
+  "sucesso": true,
+  "mensagem": "Entrada criada com sucesso",
+  "dados": {
+    "_id": "...",
+    "usuario": "...",
+    "titulo": "Meu primeiro dia",
+    "conteudo": "Hoje foi um dia incrível...",
+    "data": "2025-12-06T00:00:00.000Z",
+    "humor": "feliz",
+    "tags": ["viagem", "felicidade"],
+    "privado": true
+  }
+}
+```
+
+#### Atualizar entrada
+```http
+PUT /diary/entries/:id
+Authorization: Bearer seu_token_jwt
+Content-Type: application/json
+
+{
+  "titulo": "Título atualizado",
+  "conteudo": "Conteúdo atualizado...",
+  "humor": "animado"
+}
+```
+
+**Resposta:**
+```json
+{
+  "sucesso": true,
+  "mensagem": "Entrada atualizada com sucesso",
+  "dados": {
+    "_id": "...",
+    "titulo": "Título atualizado",
+    "conteudo": "Conteúdo atualizado...",
+    "humor": "animado"
+  }
+}
+```
+
+#### Deletar entrada
+```http
+DELETE /diary/entries/:id
+Authorization: Bearer seu_token_jwt
+```
+
+**Resposta:**
+```json
+{
+  "sucesso": true,
+  "mensagem": "Entrada deletada com sucesso"
+}
+```
+
 ## 🔐 Autenticação
 
 A API utiliza JWT (JSON Web Token) para autenticação. Após fazer login ou cadastro, você receberá um token que deve ser enviado no header `Authorization` com o prefixo `Bearer`:
@@ -152,13 +284,16 @@ App01 - API/
 │   │   └── database.js          # Configuração do MongoDB
 │   ├── controllers/
 │   │   ├── authController.js    # Controladores de autenticação
-│   │   └── userController.js    # Controladores de usuário
+│   │   ├── userController.js    # Controladores de usuário
+│   │   └── diaryController.js   # Controladores de diário
 │   ├── middlewares/
 │   │   └── auth.js              # Middleware de autenticação JWT
 │   ├── models/
-│   │   └── User.js              # Modelo de usuário
+│   │   ├── User.js              # Modelo de usuário
+│   │   └── Entry.js             # Modelo de entrada do diário
 │   ├── routes/
-│   │   └── authRoutes.js        # Rotas de autenticação
+│   │   ├── authRoutes.js        # Rotas de autenticação
+│   │   └── diaryRoutes.js       # Rotas de diário
 │   └── server.js                # Servidor Express
 ├── .env                         # Variáveis de ambiente (não commitado)
 ├── .env.example                 # Exemplo de variáveis
@@ -171,6 +306,7 @@ App01 - API/
 
 ## 🎯 Funcionalidades
 
+### Autenticação
 - ✅ Verificação de disponibilidade de username
 - ✅ Cadastro de usuários com validação
 - ✅ Login com username e senha
@@ -179,6 +315,18 @@ App01 - API/
 - ✅ Validação de dados (email, username único)
 - ✅ Middleware de autenticação
 - ✅ Proteção de rotas privadas
+
+### Diário
+- ✅ Criar entradas de diário
+- ✅ Listar todas as entradas do usuário
+- ✅ Buscar entrada específica por ID
+- ✅ Atualizar entradas existentes
+- ✅ Deletar entradas
+- ✅ Filtro por usuário (apenas vê suas próprias entradas)
+- ✅ Suporte para humor, tags e privacidade
+- ✅ Ordenação por data (mais recentes primeiro)
+
+### Deploy
 - ✅ Pronto para deploy na Vercel
 
 ## 🚀 Deploy
